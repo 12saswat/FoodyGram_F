@@ -180,7 +180,7 @@ const LoginPage = () => {
 
             {/* Submit Button */}
             <button
-              type="button"
+              type="submit"
               disabled={loading}
               className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 rounded-2xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
