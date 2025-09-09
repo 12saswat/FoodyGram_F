@@ -4,6 +4,7 @@ import axios from "axios";
 const axiosInstance = axios.create({
   baseURL: "http://localhost:4000/api/v1",
   timeout: 15000,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -13,11 +14,8 @@ const axiosInstance = axios.create({
 // Request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Add auth token if available
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    // Remove token logic since we're using httpOnly cookies
+    // Cookies are automatically sent with requests
 
     // Log request for debugging (remove in production)
     console.log(`🚀 ${config.method?.toUpperCase()} ${config.url}`, {

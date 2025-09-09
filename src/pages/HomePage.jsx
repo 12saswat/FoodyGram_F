@@ -11,8 +11,12 @@ import {
   Menu,
   Home,
   User,
+  Bell,
+  BookmarkPlus,
+  BaggageClaim,
 } from "lucide-react";
 import axiosInstance from "../config/axios";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [items, setItems] = useState([]);
@@ -27,9 +31,11 @@ const HomePage = () => {
   const [cartItems, setCartItems] = useState([]);
   const videoRefs = useRef([]);
   const containerRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchItems();
+    fetchSavedItems();
   }, []);
 
   useEffect(() => {
@@ -56,11 +62,26 @@ const HomePage = () => {
   const fetchItems = async () => {
     try {
       const response = await axiosInstance.get("/items");
-      setItems(response.data.data);
+      // Shuffle the items array
+      const shuffled = response.data.data
+        .map((value) => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+      setItems(shuffled);
     } catch (err) {
       setError("Failed to load items");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSavedItems = async () => {
+    try {
+      const response = await axiosInstance.get("user/savedItems");
+      const savedItemIds = response.data.data?.map((item) => item._id) || [];
+      setSavedItems(new Set(savedItemIds));
+    } catch (err) {
+      console.error("Failed to fetch saved items:", err);
     }
   };
 
@@ -99,30 +120,40 @@ const HomePage = () => {
     });
   };
 
-  const toggleSave = (itemId) => {
-    setSavedItems((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(itemId)) {
-        newSet.delete(itemId);
-      } else {
-        newSet.add(itemId);
-      }
-      return newSet;
-    });
+  const toggleSave = async (itemId) => {
+    try {
+      await axiosInstance.post(`user/save/${itemId}`);
+      setSavedItems((prev) => {
+        const newSet = new Set(prev);
+        if (newSet.has(itemId)) {
+          newSet.delete(itemId);
+        } else {
+          newSet.add(itemId);
+        }
+        return newSet;
+      });
+    } catch (err) {
+      console.error("Failed to toggle save:", err);
+    }
   };
 
-  const addToCart = (item) => {
-    setCartItems((prev) => {
-      const existing = prev.find((cartItem) => cartItem._id === item._id);
-      if (existing) {
-        return prev.map((cartItem) =>
-          cartItem._id === item._id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        );
-      }
-      return [...prev, { ...item, quantity: 1 }];
-    });
+  const addToCart = async (item) => {
+    try {
+      await axiosInstance.post(`/user/cart/${item._id}`);
+      setCartItems((prev) => {
+        const existing = prev.find((cartItem) => cartItem._id === item._id);
+        if (existing) {
+          return prev.map((cartItem) =>
+            cartItem._id === item._id
+              ? { ...cartItem, quantity: cartItem.quantity + 1 }
+              : cartItem
+          );
+        }
+        return [...prev, { ...item, quantity: 1 }];
+      });
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+    }
   };
 
   const getSavedItemsData = () => {
@@ -153,7 +184,9 @@ const HomePage = () => {
   // Add touch handling for better mobile experience
   const handleTouchStart = useRef(null);
   const handleTouchEnd = (e, index) => {
-    if (!handleTouchStart.current) return;
+    if (!handleTouchStart.current) {
+      return;
+    }
 
     const touchEnd = e.changedTouches[0].clientY;
     const touchStart = handleTouchStart.current;
@@ -234,48 +267,81 @@ const HomePage = () => {
               playsInline
               onClick={() => toggleVideoPlay(index)}
               onLoadedData={() => {
-                if (index === 0) handleVideoPlay(0);
+                if (index === 0) {
+                  handleVideoPlay(0);
+                }
               }}
             />
 
             {/* Gradient Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60" />
+            <div className="absolute inset-0 " />
 
             {/* Restaurant Info - Top with Gradient Blur */}
-            <div className="absolute top-0 left-0 right-0 z-40 bg-gradient-to-b from-black/70 via-black/40 to-transparent pt-5 pb-6">
-              <div className="">
-                <div className="flex items-center space-x-3 bg-white/1 backdrop-blur-md rounded-2xl p-3 border border-white/2 shadow-lg">
-                  <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white/30">
-                    <span className="text-white text-sm font-bold">
-                      {item.resturantId.name.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-white font-bold text-base drop-shadow-lg">
-                      {item.resturantId.name}
-                    </p>
-                    <div className="flex items-center space-x-2">
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 text-yellow-400 fill-current drop-shadow-sm" />
-                        <span className="text-white text-sm font-medium drop-shadow-sm">
-                          {item.resturantId.rating}
+            <div className="absolute top-0 left-0 right-0 z-40 bg-gradient-to-b pt-3 pb-6">
+              <div className="px-4">
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={() =>
+                      navigate(`/restaurants/profile/${item.resturantId._id}`)
+                    }
+                    className="flex-1"
+                  >
+                    <div className="flex items-center space-x-3 rounded-2xl p-3 shadow-lg hover:bg-white/20 transition-all">
+                      <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white/30">
+                        <span className="text-white text-sm font-bold">
+                          {item.resturantId.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
-                      <span className="text-gray-200 text-sm">•</span>
-                      <div className="flex items-center space-x-1">
-                        <MapPin className="w-4 h-4 text-gray-300 drop-shadow-sm" />
-                        <span className="text-gray-200 text-sm truncate drop-shadow-sm">
-                          {item.resturantId.address.split(",")[2]}
-                        </span>
+                      <div className="flex-1 text-left">
+                        <p className="text-white font-bold text-base drop-shadow-lg">
+                          {item.resturantId.name}
+                        </p>
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1">
+                            <Star className="w-4 h-4 text-yellow-400 fill-current drop-shadow-sm" />
+                            <span className="text-white text-sm font-medium drop-shadow-sm">
+                              {item.resturantId.rating}
+                            </span>
+                          </div>
+                          <span className="text-gray-200 text-sm">•</span>
+                          <div className="flex items-center space-x-1 max-w-[120px] sm:max-w-[200px]">
+                            <MapPin className="w-4 h-4 text-gray-300 drop-shadow-sm" />
+                            <span
+                              className="text-gray-200 text-sm truncate drop-shadow-sm block"
+                              title={item.resturantId.address}
+                              style={{
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                display: "block",
+                                maxWidth: "100%",
+                              }}
+                            >
+                              {item.resturantId.address}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </button>
+
+                  {/* Notification Button */}
+                  <button
+                    onClick={() => navigate("/notifications")}
+                    className="ml-3 w-10 h-10 bg-white/5 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white/30 transition-all relative"
+                  >
+                    <Bell className="w-5 h-5 text-white" />
+                    {/* Notification Badge */}
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">3</span>
+                    </div>
+                  </button>
                 </div>
               </div>
             </div>
 
             {/* Content Overlay - Bottom */}
-            <div className="absolute bottom-20 left-0 right-0 p-6">
+            <div className="absolute bottom-12 left-0 right-0 p-6">
               <div className="flex justify-between items-end">
                 {/* Left Side - Food Info */}
                 <div className="flex-1 pr-4 max-w-[70%]">
@@ -337,7 +403,7 @@ const HomePage = () => {
                           : "bg-white/20 backdrop-blur-sm group-hover:bg-yellow-500/30"
                       }`}
                     >
-                      <Bookmark
+                      <BookmarkPlus
                         className={`w-5 h-5 transition-all duration-300 ${
                           savedItems.has(item._id)
                             ? "text-white fill-current scale-110"
@@ -382,11 +448,10 @@ const HomePage = () => {
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-orange-500/20 group-hover:bg-orange-500/30 transition-all">
               <Home className="w-5 h-5 text-orange-400" />
             </div>
-            <span className="text-orange-400 text-xs font-medium">Home</span>
           </button>
 
           <button
-            onClick={() => setShowSavedModal(true)}
+            onClick={() => navigate("/saved")}
             className="flex flex-col items-center space-y-1 group relative"
           >
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 group-hover:bg-white/20 transition-all">
@@ -399,24 +464,6 @@ const HomePage = () => {
                 </span>
               </div>
             )}
-            <span className="text-white text-xs font-medium">Saved</span>
-          </button>
-
-          <button
-            onClick={() => setShowCartModal(true)}
-            className="flex flex-col items-center space-y-1 group relative"
-          >
-            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 group-hover:bg-white/20 transition-all">
-              <ShoppingCart className="w-5 h-5 text-white" />
-            </div>
-            {cartItems.length > 0 && (
-              <div className="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">
-                  {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-                </span>
-              </div>
-            )}
-            <span className="text-white text-xs font-medium">Cart</span>
           </button>
 
           <button
@@ -426,173 +473,25 @@ const HomePage = () => {
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 group-hover:bg-white/20 transition-all">
               <Menu className="w-5 h-5 text-white" />
             </div>
-            <span className="text-white text-xs font-medium">Menu</span>
           </button>
 
-          <button className="flex flex-col items-center space-y-1 group">
+          <button
+            onClick={() => navigate("/cart")}
+            className="flex flex-col items-center space-y-1 group relative"
+          >
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 group-hover:bg-white/20 transition-all">
-              <User className="w-5 h-5 text-white" />
+              <BaggageClaim className="w-5 h-5 text-white" />
             </div>
-            <span className="text-white text-xs font-medium">Profile</span>
+            {cartItems.length > 0 && (
+              <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">
+                  {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+                </span>
+              </div>
+            )}
           </button>
         </div>
       </div>
-
-      {/* Saved Items Modal */}
-      {showSavedModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end">
-          <div className="w-full bg-white rounded-t-3xl max-h-[80vh] overflow-hidden">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900">Saved Items</h2>
-                <button
-                  onClick={() => setShowSavedModal(false)}
-                  className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-            <div className="p-6 overflow-y-auto max-h-[60vh]">
-              {getSavedItemsData().length === 0 ? (
-                <div className="text-center py-8">
-                  <Bookmark className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">No saved items yet</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {getSavedItemsData().map((item) => (
-                    <div
-                      key={item._id}
-                      className="flex items-center space-x-4 p-4 bg-gray-50 rounded-2xl"
-                    >
-                      <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-                        <span className="text-white font-bold">
-                          {item.name.charAt(0)}
-                        </span>
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-gray-900">{item.name}</h3>
-                        <p className="text-gray-600 text-sm">
-                          {item.resturantId.name}
-                        </p>
-                        <p className="text-orange-600 font-bold">
-                          ₹{item.price}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Cart Modal */}
-      {showCartModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end">
-          <div className="w-full bg-white rounded-t-3xl max-h-[80vh] overflow-hidden">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900">Cart</h2>
-                <button
-                  onClick={() => setShowCartModal(false)}
-                  className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-            <div className="p-6 overflow-y-auto max-h-[60vh]">
-              {cartItems.length === 0 ? (
-                <div className="text-center py-8">
-                  <ShoppingCart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">Your cart is empty</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {cartItems.map((item) => (
-                    <div
-                      key={item._id}
-                      className="flex items-center space-x-4 p-4 bg-gray-50 rounded-2xl"
-                    >
-                      <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-                        <span className="text-white font-bold">
-                          {item.name.charAt(0)}
-                        </span>
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-gray-900">{item.name}</h3>
-                        <p className="text-gray-600 text-sm">
-                          {item.resturantId.name}
-                        </p>
-                        <p className="text-orange-600 font-bold">
-                          ₹{item.price} x {item.quantity}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="mt-6 p-4 bg-orange-50 rounded-2xl">
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-lg font-bold">Total:</span>
-                      <span className="text-xl font-bold text-orange-600">
-                        ₹
-                        {cartItems.reduce(
-                          (sum, item) => sum + item.price * item.quantity,
-                          0
-                        )}
-                      </span>
-                    </div>
-                    <button className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-2xl font-bold">
-                      Proceed to Checkout
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Menu Modal */}
-      {showMenuModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end">
-          <div className="w-full bg-white rounded-t-3xl max-h-[80vh] overflow-hidden">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900">Menu</h2>
-                <button
-                  onClick={() => setShowMenuModal(false)}
-                  className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-            <div className="p-6 space-y-4">
-              <button className="w-full flex items-center space-x-4 p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors">
-                <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
-                  <Home className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-medium text-gray-900">Home</span>
-              </button>
-              <button className="w-full flex items-center space-x-4 p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors">
-                <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-medium text-gray-900">Profile</span>
-              </button>
-              <button className="w-full flex items-center space-x-4 p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors">
-                <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
-                  <Star className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-medium text-gray-900">Orders</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

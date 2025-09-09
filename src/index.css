@@ -109,7 +109,10 @@ html {
 }
 
 /* Prevent zoom on double tap */
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   touch-action: manipulation;
 }
 
@@ -124,8 +127,13 @@ button, input, select, textarea {
 /* Prevent horizontal scroll */
 body {
   overflow-x: hidden;
-  position: fixed;
-  width: 100%;
+  /* Remove: position: fixed; width: 100%; */
+}
+
+/* Add proper scrolling for auth pages */
+.auth-container {
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 /* Safe area handling for notched devices */
@@ -136,4 +144,3 @@ body {
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom);
 }
-
