@@ -26,7 +26,11 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log("Form submitted - preventing default");
     e.preventDefault();
+    e.stopPropagation();
+
+    console.log("Setting loading to true");
     setLoading(true);
     setError("");
 
@@ -34,26 +38,37 @@ const LoginPage = () => {
       const endpoint =
         formData.role === "customer" ? "/user/login" : "/resturants/login";
 
+      console.log("Making API call to:", endpoint);
+
       const response = await axiosInstance.post(endpoint, {
         email: formData.email,
         password: formData.password,
       });
 
+      console.log("API response received:", response.data);
+
       if (response.data.success) {
-        // Store token and user in localStorage
         localStorage.setItem("authToken", response.data.token);
+        console.log(
+          "Navigating to:",
+          formData.role === "customer" ? "/home" : "/restaurant/profile"
+        );
 
         navigate(
           formData.role === "customer" ? "/home" : "/restaurant/profile"
         );
+      } else {
+        setError("Login failed - invalid credentials");
       }
     } catch (err) {
+      console.error("Catch block - Login error:", err);
       setError(
         err.response?.data?.response?.message ||
           err.response?.data?.message ||
           "Login failed"
       );
     } finally {
+      console.log("Setting loading to false");
       setLoading(false);
     }
   };
@@ -165,7 +180,7 @@ const LoginPage = () => {
 
             {/* Submit Button */}
             <button
-              type="submit"
+              type="button"
               disabled={loading}
               className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 rounded-2xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
