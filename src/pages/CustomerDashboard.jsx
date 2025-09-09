@@ -549,7 +549,7 @@ const CustomerDashboard = () => {
                       </div>
 
                       <div className="text-right">
-                        <div className="text-lg font-bold text-gray-900 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                        <div className="text-lg font-bold text-gray-900 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text">
                           ₹{Math.round(category.avgPrice)}
                         </div>
                         <div className="text-xs text-gray-500">Avg Price</div>
