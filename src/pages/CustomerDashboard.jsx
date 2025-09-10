@@ -189,7 +189,7 @@ const CustomerDashboard = () => {
             { value: "4.8", label: "Rating", hasRating: true },
           ].map((stat, index) => (
             <div
-              key={index}
+              key={stat.id}
               className={`bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20 hover:bg-white/20 transition-all duration-500 transform hover:scale-105 ${
                 statsAnimated ? "animate-fade-in-up" : "opacity-0 translate-y-4"
               }`}
@@ -396,7 +396,7 @@ const CustomerDashboard = () => {
                         </div>
 
                         <div className="text-right sm:hidden">
-                          <div className="text-xl font-bold text-gray-900 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                          <div className="text-xl font-bold text-gray-900 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text">
                             ₹
                             {order.totalAmount ||
                               order.items.reduce(
@@ -411,7 +411,7 @@ const CustomerDashboard = () => {
                       <div className="flex items-center justify-between sm:space-x-4">
                         {/* Total - Hidden on mobile, shown on larger screens */}
                         <div className="text-right hidden sm:block">
-                          <div className="text-xl font-bold text-gray-900 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                          <div className="text-xl font-bold text-gray-900 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text ">
                             ₹
                             {order.totalAmount ||
                               order.items.reduce(
@@ -734,7 +734,7 @@ const CustomerDashboard = () => {
                   { item: "Desserts", emoji: "🍰" },
                 ].map((food, index) => (
                   <div
-                    key={food.item}
+                    key={index}
                     className="text-center p-2 bg-gray-50 rounded-lg"
                   >
                     <div className="text-sm mb-1">{food.emoji}</div>

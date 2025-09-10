@@ -222,7 +222,7 @@ const RestaurantProfile = () => {
           <div className="flex space-x-2 overflow-x-auto scrollbar-hide pb-2">
             {categories.map((category, index) => (
               <button
-                key={category}
+                key={index}
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all transform hover:scale-105 ${
                   selectedCategory === category
