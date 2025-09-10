@@ -45,8 +45,6 @@ const LoginPage = () => {
         password: formData.password,
       });
 
-      console.log("API response received:", response.data);
-
       if (response.data.success) {
         localStorage.setItem("authToken", response.data.token);
         console.log(
