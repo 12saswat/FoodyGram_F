@@ -16,20 +16,10 @@ import OrderPage from "./pages/ordersPage/OrderPage";
 import OrderList from "./pages/ordersPage/OrderList";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import ProtectedRoute from "./protected/ProtectedRoute";
+import { useAuth } from "./context/AuthContext";
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // null = loading
-
-  useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem("authToken");
-
-      // Check if both token and user exist
-      setIsAuthenticated(true);
-    };
-
-    checkAuth();
-  }, []);
+  const isAuthenticated = useAuth;
 
   // Show loading while checking authentication
   if (isAuthenticated === null) {

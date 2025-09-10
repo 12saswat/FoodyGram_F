@@ -26,6 +26,7 @@ const HomePage = () => {
   const videoRefs = useRef([]);
   const containerRef = useRef(null);
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     fetchItems();
