@@ -272,64 +272,82 @@ const HomePage = () => {
             {/* Restaurant Info - Top with Gradient Blur */}
             <div className="absolute top-0 left-0 right-0 z-40 bg-gradient-to-b pt-3 pb-6">
               <div className="px-4">
-                <div className="flex items-center justify-between">
-                  <button
-                    onClick={() =>
-                      navigate(`/restaurants/profile/${item.resturantId._id}`)
-                    }
-                    className="flex-1"
-                  >
-                    <div className="flex items-center space-x-3 rounded-2xl p-3 shadow-lg hover:bg-white/20 transition-all">
-                      <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white/30">
-                        <span className="text-white text-sm font-bold">
-                          {item.resturantId.name.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                      <div className="flex-1 text-left">
-                        <p className="text-white font-bold text-base drop-shadow-lg">
-                          {item.resturantId.name}
-                        </p>
-                        <div className="flex items-center space-x-2">
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-4 h-4 text-yellow-400 fill-current drop-shadow-sm" />
-                            <span className="text-white text-sm font-medium drop-shadow-sm">
-                              {item.resturantId.rating}
-                            </span>
-                          </div>
-                          <span className="text-gray-200 text-sm">•</span>
-                          <div className="flex items-center space-x-1 max-w-[120px] sm:max-w-[200px]">
-                            <MapPin className="w-4 h-4 text-gray-300 drop-shadow-sm" />
-                            <span
-                              className="text-gray-200 text-sm truncate drop-shadow-sm block"
-                              title={item.resturantId.address}
-                              style={{
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                                display: "block",
-                                maxWidth: "100%",
-                              }}
-                            >
-                              {item.resturantId.address}
-                            </span>
+                {isAuthenticated ? (
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() =>
+                        navigate(`/restaurants/profile/${item.resturantId._id}`)
+                      }
+                      className="flex-1"
+                    >
+                      <div className="flex items-center space-x-3 rounded-2xl p-3 shadow-lg hover:bg-white/20 transition-all">
+                        <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white/30">
+                          <span className="text-white text-sm font-bold">
+                            {item.resturantId.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="flex-1 text-left">
+                          <p className="text-white font-bold text-base drop-shadow-lg">
+                            {item.resturantId.name}
+                          </p>
+                          <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-1">
+                              <Star className="w-4 h-4 text-yellow-400 fill-current drop-shadow-sm" />
+                              <span className="text-white text-sm font-medium drop-shadow-sm">
+                                {item.resturantId.rating}
+                              </span>
+                            </div>
+                            <span className="text-gray-200 text-sm">•</span>
+                            <div className="flex items-center space-x-1 max-w-[120px] sm:max-w-[200px]">
+                              <MapPin className="w-4 h-4 text-gray-300 drop-shadow-sm" />
+                              <span
+                                className="text-gray-200 text-sm truncate drop-shadow-sm block"
+                                title={item.resturantId.address}
+                                style={{
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                  display: "block",
+                                  maxWidth: "100%",
+                                }}
+                              >
+                                {item.resturantId.address}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </button>
+                    </button>
 
-                  {/* Notification Button */}
-                  <button
-                    onClick={() => navigate("/notifications")}
-                    className="ml-3 w-10 h-10 bg-white/5 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white/30 transition-all relative"
-                  >
-                    <Bell className="w-5 h-5 text-white" />
-                    {/* Notification Badge */}
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">3</span>
-                    </div>
-                  </button>
-                </div>
+                    {/* Notification Button */}
+                    <button
+                      onClick={() => navigate("/notifications")}
+                      className="ml-3 w-10 h-10 bg-white/5 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white/30 transition-all relative"
+                    >
+                      <Bell className="w-5 h-5 text-white" />
+                      {/* Notification Badge */}
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">3</span>
+                      </div>
+                    </button>
+                  </div>
+                ) : (
+                  // show login/register buttons
+                  <div className="flex justify-end space-x-3 p-4">
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="px-4 py-2 bg-orange-500 text-white rounded-full"
+                    >
+                      Login
+                    </button>
+                    <button
+                      onClick={() => navigate("/register")}
+                      className="px-4 py-2 bg-gray-200 text-black rounded-full"
+                    >
+                      Register
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
