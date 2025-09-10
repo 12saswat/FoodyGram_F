@@ -17,6 +17,8 @@ import {
   Bell,
   Gift,
 } from "lucide-react";
+import { RiLogoutCircleLine } from "react-icons/ri";
+
 import axiosInstance from "../config/axios";
 import { useNavigate } from "react-router-dom";
 
@@ -108,6 +110,11 @@ const CustomerDashboard = () => {
     }
     return "Good Evening";
   };
+  const handelLogout=()=>{
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    window.location.href = "/login";
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 relative overflow-hidden">
@@ -174,10 +181,7 @@ const CustomerDashboard = () => {
             className="text-right animate-fade-in-up"
             style={{ animationDelay: "0.2s" }}
           >
-            <div className="text-2xl font-bold text-orange-400">
-              ₹{stats.savedAmount || 0}
-            </div>
-            <div className="text-xs text-gray-400">Total Saved</div>
+            <RiLogoutCircleLine onClick={() =>handelLogout() } className="w-6 h-6 text-white" />
           </div>
         </div>
 
