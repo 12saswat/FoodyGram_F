@@ -19,7 +19,7 @@ import ProtectedRoute from "./protected/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useAuth();
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
 
   // Show loading while checking authentication
   if (isAuthenticated === null) {

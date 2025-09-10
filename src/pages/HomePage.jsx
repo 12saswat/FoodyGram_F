@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import axiosInstance from "../config/axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const HomePage = () => {
   const [items, setItems] = useState([]);
