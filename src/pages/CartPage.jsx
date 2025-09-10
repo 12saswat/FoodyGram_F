@@ -151,62 +151,64 @@ const CartPage = () => {
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {cartData.items.map((item, index) => (
               <div
                 key={`${item._id}-${index}`}
-                className="bg-white rounded-2xl p-4 shadow-sm border border-orange-100"
+                className="bg-white rounded-xl p-3 shadow-sm border border-orange-100"
               >
-                <div className="flex items-center space-x-4">
-                  {/* Item Image */}
-                  <div className="w-20 h-20 bg-gradient-to-r from-orange-400 to-red-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-2xl">🍽️</span>
+                <div className="flex items-start space-x-3">
+                  {/* Item Image - Smaller size */}
+                  <div className="w-14 h-14 bg-gradient-to-r from-orange-400 to-red-400 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span className="text-white text-lg">🍽️</span>
                   </div>
 
-                  {/* Item Info */}
-                  <div className="flex-1">
-                    <h3 className="text-md font-semibold leading-5 lg:font-bold text-gray-800 mb-1">
+                  {/* Item Info - Takes most space */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-semibold text-gray-800 mb-1 line-clamp-1">
                       {item.name}
                     </h3>
-                    <p className="text-gray-600 text-sm mb-2 line-clamp-1">
+                    <p className="text-gray-600 text-xs mb-2 line-clamp-1">
                       {item.description?.replace(/"/g, "")}
                     </p>
-                    <div className="flex items-center justify-between gap-6">
-                      <span className="text-lg font-bold text-orange-600">
+
+                    {/* Price and Category - Stacked on mobile */}
+                    <div className="flex flex-col space-y-1 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+                      <span className="text-base font-bold text-orange-600">
                         ₹{item.price}
                       </span>
-                      <span className="bg-orange-100 text-orange-700 px-2 py-1 sm:px-3 sm:py-1 md:px-4 md:py-2 rounded-full text-xs sm:text-sm md:text-base font-medium ">
+                      <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-xs font-medium self-start">
                         {item.category}
                       </span>
                     </div>
                   </div>
 
-                  {/* Quantity Controls */}
-                  <div className="flex flex-col items-center space-y-2">
+                  {/* Quantity Controls - Compact for mobile */}
+                  <div className="flex flex-col items-center space-y-2 flex-shrink-0">
                     <div className="flex items-center space-x-1 bg-gray-100 rounded-full p-1">
                       <button
                         onClick={() =>
                           updateQuantity(item._id, item.quantity - 1)
                         }
-                        className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:bg-gray-50 transition-colors"
+                        className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:bg-gray-50 transition-colors active:scale-95"
                       >
-                        <Minus className="w-4 h-4 text-gray-600" />
+                        <Minus className="w-3 h-3 text-gray-600" />
                       </button>
-                      <span className="w-8 text-center font-medium">
+                      <span className="w-6 text-center text-sm font-medium">
                         {item.quantity}
                       </span>
                       <button
                         onClick={() =>
                           updateQuantity(item._id, item.quantity + 1)
                         }
-                        className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:bg-gray-50 transition-colors"
+                        className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:bg-gray-50 transition-colors active:scale-95"
                       >
-                        <Plus className="w-4 h-4 text-gray-600" />
+                        <Plus className="w-3 h-3 text-gray-600" />
                       </button>
                     </div>
                     <button
                       onClick={() => removeFromCart(item._id)}
-                      className="text-red-500 hover:text-red-600 transition-colors"
+                      className="text-red-500 hover:text-red-600 transition-colors active:scale-95"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
