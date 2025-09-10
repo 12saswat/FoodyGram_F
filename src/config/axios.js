@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create axios instance with base configuration
 const axiosInstance = axios.create({
-  baseURL: "https://foodygram.onrender.com/api/v1",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
 

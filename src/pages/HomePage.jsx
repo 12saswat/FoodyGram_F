@@ -6,11 +6,8 @@ import {
   Star,
   MapPin,
   Play,
-  Pause,
-  MoreHorizontal,
   Menu,
   Home,
-  User,
   Bell,
   BookmarkPlus,
   BaggageClaim,
@@ -25,9 +22,6 @@ const HomePage = () => {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [likedItems, setLikedItems] = useState(new Set());
   const [savedItems, setSavedItems] = useState(new Set());
-  const [showSavedModal, setShowSavedModal] = useState(false);
-  const [showMenuModal, setShowMenuModal] = useState(false);
-  const [showCartModal, setShowCartModal] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const videoRefs = useRef([]);
   const containerRef = useRef(null);
@@ -62,7 +56,6 @@ const HomePage = () => {
   const fetchItems = async () => {
     try {
       const response = await axiosInstance.get("/items");
-      // Shuffle the items array
       const shuffled = response.data.data
         .map((value) => ({ value, sort: Math.random() }))
         .sort((a, b) => a.sort - b.sort)
@@ -467,7 +460,7 @@ const HomePage = () => {
           </button>
 
           <button
-            onClick={() => setShowMenuModal(true)}
+            onClick={() => navigate("/customer/dashboard")}
             className="flex flex-col items-center space-y-1 group"
           >
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 group-hover:bg-white/20 transition-all">
