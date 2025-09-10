@@ -144,14 +144,6 @@ const CustomerDashboard = () => {
         ></div>
       </div>
 
-      {/* Notification Badge with slide animation */}
-      {showNotification && (
-        <div className="fixed top-4 right-4 z-50 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full shadow-lg text-sm flex items-center space-x-2 animate-slide-in-right">
-          <Bell className="w-4 h-4 animate-swing" />
-          <span>Special offers available!</span>
-        </div>
-      )}
-
       {/* Header Section */}
       <div className="relative z-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white p-6 shadow-2xl backdrop-blur-sm">
         <div className="flex items-center justify-between mb-6">
