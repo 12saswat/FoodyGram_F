@@ -15,6 +15,7 @@ import CartPage from "./pages/CartPage";
 import OrderPage from "./pages/ordersPage/OrderPage";
 import OrderList from "./pages/ordersPage/OrderList";
 import CustomerDashboard from "./pages/CustomerDashboard";
+import ProtectedRoute from "./protected/ProtectedRoute";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // null = loading
@@ -45,31 +46,75 @@ const App = () => {
         <Routes>
           <Route
             path="/"
-            element={
-              isAuthenticated ? (
-                <Navigate to="/home" replace />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
+            element={<HomePage isAuthenticated={isAuthenticated} />}
           />
+
           <Route
             path="/login"
             element={<LoginPage setIsAuthenticated={setIsAuthenticated} />}
           />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/home" element={<HomePage />} />
+
+          {/* Protected Routes */}
           <Route
             path="/restaurants/profile/:restaurantId"
-            element={<RestaurantProfile />}
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <RestaurantProfile />
+              </ProtectedRoute>
+            }
           />
-          <Route path="/notifications" element={<NotificationPage />} />
-          <Route path="/saved" element={<SavedPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/orders/:orderId" element={<OrderPage />} />
-          <Route path="/orders/list" element={<OrderList />} />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <NotificationPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/saved"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <SavedPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <CartPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders/:orderId"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <OrderPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders/list"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <OrderList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/dashboard"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <CustomerDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />
-          <Route path="/customer/dashboard" element={<CustomerDashboard />} />
         </Routes>
       </div>
     </Router>
