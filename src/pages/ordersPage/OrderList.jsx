@@ -187,107 +187,112 @@ const OrderList = () => {
             </button>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          // Order cards
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {orders.map((order, index) => (
               <div
                 key={order._id}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 animate-fadeIn border border-white/20"
+                className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-300 animate-fadeIn border border-white/20"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="p-6">
+                <div className="p-4">
                   {/* Order Header */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <p className="text-sm text-gray-500">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-gray-500 line-clamp-1">
                         {order.items[0]?.resturantId?.name ||
                           order.items[0]?.resturant?.name ||
                           "Unknown Restaurant"}
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${getStatusColor(
-                          order.status
-                        )}`}
-                      >
-                        {getStatusIcon(order.status)}
-                        {order.status.toUpperCase()}
-                      </span>
-                    </div>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1 flex-shrink-0 ml-2 ${getStatusColor(
+                        order.status
+                      )}`}
+                    >
+                      {getStatusIcon(order.status)}
+                      {order.status.toUpperCase()}
+                    </span>
                   </div>
 
-                  {/* Order Items Preview */}
-                  <div className="space-y-3 mb-4">
-                    {order.items.slice(0, 2).map((item) => (
+                  {/* Order Items Preview - Mobile Optimized */}
+                  <div className="space-y-2 mb-3">
+                    {order.items.slice(0, 1).map((item) => (
                       <div
                         key={item._id}
-                        className="flex items-center gap-3 relative"
+                        className="flex items-center gap-2 relative"
                       >
-                        {/* Item Image */}
+                        {/* Item Image - Smaller */}
                         <img
                           src={item.imageUrl}
                           alt={item.name}
-                          className="w-12 h-12 rounded-lg object-cover"
+                          className="w-8 h-8 rounded-md object-cover flex-shrink-0"
                         />
 
                         {/* Item Info */}
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-800 line-clamp-1">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-800 text-sm line-clamp-1">
                             {item.name}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-xs text-gray-500">
                             Qty: {item.quantity} × ₹{item.price}
                           </p>
                         </div>
 
-                        {/* Cross Button */}
+                        {/* Cross Button - Smaller */}
                         <button
                           onClick={() => removeOrderItem(order._id, item._id)}
-                          className="absolute top-0 right-0 text-gray-400 hover:text-red-500 transition-colors"
+                          className="absolute -top-1 -right-1 w-4 h-4 text-gray-400 hover:text-red-500 transition-colors text-xs flex items-center justify-center"
                         >
                           ✕
                         </button>
                       </div>
                     ))}
 
-                    {order.items.length > 2 && (
-                      <p className="text-sm text-gray-500 ml-15">
-                        +{order.items.length - 2} more items
+                    {order.items.length > 1 && (
+                      <p className="text-xs text-gray-500 ml-10">
+                        +{order.items.length - 1} more items
                       </p>
                     )}
                   </div>
 
-                  {/* Order Footer */}
-                  <div className="border-t pt-4 flex items-center justify-between">
-                    <div>
-                      <p className="font-bold text-lg text-gray-800">
-                        ₹{order.totalAmount}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </p>
+                  {/* Order Footer - Mobile Stacked Layout */}
+                  <div className="border-t pt-3">
+                    {/* Price and Date */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <p className="font-bold text-base text-gray-800">
+                          ₹{order.totalAmount}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
+
+                    {/* Action Buttons - Mobile Optimized */}
+                    <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
                       <button
                         onClick={() => setSelectedOrder(order)}
-                        className="bg-orange-100 text-orange-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-200 transition-colors mobile-touch-target"
+                        className="bg-orange-100 text-orange-600 px-3 py-2 rounded-lg text-xs font-medium hover:bg-orange-200 transition-colors flex-1 min-h-[36px]"
                       >
                         View Details
                       </button>
-                      <button
-                        onClick={() => deleteOrder(order._id)}
-                        className="bg-red-100 text-red-600 px-3 py-2 rounded-lg hover:bg-red-200 transition-colors mobile-touch-target"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                      {/* Pay Button */}
-                      <button
-                        onClick={() => handlePay(order)}
-                        className="bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-200 transition-colors mobile-touch-target"
-                      >
-                        Pay Now
-                      </button>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => deleteOrder(order._id)}
+                          className="bg-red-100 text-red-600 px-3 py-2 rounded-lg hover:bg-red-200 transition-colors flex-1 min-h-[36px] flex items-center justify-center"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handlePay(order)}
+                          className="bg-green-100 text-green-700 px-3 py-2 rounded-lg text-xs font-medium hover:bg-green-200 transition-colors flex-1 min-h-[36px]"
+                        >
+                          Pay Now
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
