@@ -17,9 +17,10 @@ import OrderList from "./pages/ordersPage/OrderList";
 import ProtectedRoute from "./protected/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
 import CustomerDashboard from "./pages/dashboard/CustomerDashboard";
-import RestaurantDashboard from "./pages/restaurant/RestaurantDashboard";
 import AddItem from "./pages/restaurant/AddItem";
 import EditItem from "./pages/restaurant/EditItem";
+import RestaurantDashboard from "./pages/restaurant/RestaurantDashboard";
+import ItemVideoPage from "./pages/restaurant/ItemVideoPage";
 
 const App = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
@@ -111,6 +112,14 @@ const App = () => {
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <RestaurantDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/item/:id"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <ItemVideoPage />
               </ProtectedRoute>
             }
           />
