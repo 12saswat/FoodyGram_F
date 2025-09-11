@@ -92,7 +92,7 @@ const RestaurantDashboard = () => {
   useEffect(() => {
     fetchRestaurantProfile();
     fetchStats();
-  }, [fetchRestaurantProfile]);
+  }, []);
 
   const fetchRestaurantProfile = async () => {
     try {
