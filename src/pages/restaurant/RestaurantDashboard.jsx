@@ -22,6 +22,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import axiosInstance from "../../config/axios";
+import { useNavigate } from "react-router-dom";
 
 // Animated Background Component
 const AnimatedBackground = () => (
@@ -85,6 +86,7 @@ const RestaurantDashboard = () => {
     totalOrders: 142,
     revenue: 15680,
   });
+  const navigate = useNavigate();
 
   // Keep original API structure for easy replacement
   useEffect(() => {
@@ -208,7 +210,7 @@ const RestaurantDashboard = () => {
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
           <Grid3X3 className="w-5 h-5 mr-2 animate-bounce" />
           Menu Items
-          <Sparkles className="w-4 h-4 ml-2 text-yellow-500 animate-spin" />
+      
         </h3>
 
         {items.length === 0 ? (
@@ -220,7 +222,7 @@ const RestaurantDashboard = () => {
             <p className="text-gray-500 mb-4 text-lg">No items yet!</p>
             <button
               className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-xl font-medium hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-              onClick={() => console.log("Add first item")}
+              onClick={() => navigate("/item/:id")}
             >
               Add Your First Item
             </button>
@@ -412,7 +414,7 @@ const RestaurantDashboard = () => {
             <button
               className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-3 rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl"
               style={{ animation: "bounceIn 0.6s ease-out" }}
-              onClick={() => console.log("Add item clicked")}
+              onClick={() => navigate("/restaurant/items/add")}
             >
               <Plus className="w-5 h-5" />
             </button>
@@ -462,11 +464,8 @@ const RestaurantDashboard = () => {
                 : "text-gray-500 hover:text-gray-700 hover:bg-white hover:bg-opacity-30"
             }`}
           >
-            <Grid3X3 className="w-4 h-4" />
             <span>Items</span>
-            {activeSection === "items" && (
-              <Sparkles className="w-3 h-3 text-yellow-500 animate-spin" />
-            )}
+            {activeSection === "items"}
           </button>
           <button
             onClick={() => setActiveSection("analytics")}
