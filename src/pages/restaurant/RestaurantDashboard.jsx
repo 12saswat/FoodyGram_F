@@ -16,11 +16,12 @@ const RestaurantDashboard = () => {
   useEffect(() => {
     fetchRestaurantItems();
     fetchStats();
+    console.log("token for dashboard", localStorage.getItem("authToken"));
   }, []);
 
   const fetchRestaurantItems = async () => {
     try {
-      const response = await axiosInstance.get("/restaurant/items");
+      const response = await axiosInstance.get("/restaurants/profile");
       setItems(response.data.data);
     } catch (error) {
       console.error("Failed to fetch items:", error);

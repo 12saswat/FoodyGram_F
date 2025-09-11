@@ -6,7 +6,6 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-console.log("Axios Base URL:", axiosInstance.defaults.baseURL);
 // Request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
