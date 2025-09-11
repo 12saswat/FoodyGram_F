@@ -9,19 +9,14 @@ const axiosInstance = axios.create({
 // Request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Remove token logic since we're using httpOnly cookies
-    // Cookies are automatically sent with requests
-
-    // Log request for debugging (remove in production)
-    console.log(`🚀 ${config.method?.toUpperCase()} ${config.url}`, {
-      data: config.data,
-      params: config.params,
-    });
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
     return config;
   },
   (error) => {
-    console.error("❌ Request Error:", error);
     return Promise.reject(error);
   }
 );
@@ -29,11 +24,6 @@ axiosInstance.interceptors.request.use(
 // Response interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
-    // Log successful response
-    console.log(
-      `✅ ${response.config.method?.toUpperCase()} ${response.config.url}`,
-      response.data
-    );
     return response;
   },
   (error) => {
@@ -41,8 +31,6 @@ axiosInstance.interceptors.response.use(
     const { response } = error;
 
     if (response) {
-      console.error(`❌ ${response.status} Error:`, response.data);
-
       switch (response.status) {
         case 401:
           // Unauthorized - clear token and redirect to login

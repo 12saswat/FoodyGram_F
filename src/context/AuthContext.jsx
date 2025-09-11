@@ -3,11 +3,18 @@ import { createContext, useContext, useState, useEffect } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
+    // Check for stored token on app load
     const token = localStorage.getItem("authToken");
-    setIsAuthenticated(!!token);
+    const userRole = localStorage.getItem("userRole");
+
+    if (token) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
   }, []);
 
   return (

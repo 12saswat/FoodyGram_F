@@ -22,9 +22,12 @@ const RestaurantDashboard = () => {
   const fetchRestaurantItems = async () => {
     try {
       const response = await axiosInstance.get("/resturants/profile");
-      setItems(response.data.data);
+      // Ensure items is always an array
+      const itemsData = response.data.data?.items || response.data.data || [];
+      setItems(Array.isArray(itemsData) ? itemsData : []);
     } catch (error) {
       console.error("Failed to fetch items:", error);
+      setItems([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -138,7 +141,7 @@ const RestaurantDashboard = () => {
             Your Menu Items
           </h2>
 
-          {items.length === 0 ? (
+          {!Array.isArray(items) || items.length === 0 ? (
             <div className="text-center py-12">
               <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Package className="w-10 h-10 text-orange-500" />
@@ -156,61 +159,64 @@ const RestaurantDashboard = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {items.map((item) => (
-                <div
-                  key={item._id}
-                  className="bg-gray-50 rounded-2xl p-4 hover:shadow-lg transition-all"
-                >
-                  <div className="relative mb-4">
-                    {item.videoUrl ? (
-                      <video
-                        src={item.videoUrl}
-                        className="w-full h-40 object-cover rounded-xl"
-                        muted
-                      />
-                    ) : (
-                      <div className="w-full h-40 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl flex items-center justify-center">
-                        <span className="text-orange-600 text-4xl font-bold">
-                          {item.name.charAt(0)}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+              {Array.isArray(items) &&
+                items.map((item) => (
+                  <div
+                    key={item._id}
+                    className="bg-gray-50 rounded-2xl p-4 hover:shadow-lg transition-all"
+                  >
+                    <div className="relative mb-4">
+                      {item.videoUrl ? (
+                        <video
+                          src={item.videoUrl}
+                          className="w-full h-40 object-cover rounded-xl"
+                          muted
+                        />
+                      ) : (
+                        <div className="w-full h-40 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl flex items-center justify-center">
+                          <span className="text-orange-600 text-4xl font-bold">
+                            {item.name.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
-                  <h3 className="font-bold text-gray-800 mb-2">{item.name}</h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {item.description}
-                  </p>
+                    <h3 className="font-bold text-gray-800 mb-2">
+                      {item.name}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                      {item.description}
+                    </p>
 
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xl font-bold text-orange-600">
-                      ₹{item.price}
-                    </span>
-                    <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm font-medium">
-                      {item.category}
-                    </span>
-                  </div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xl font-bold text-orange-600">
+                        ₹{item.price}
+                      </span>
+                      <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm font-medium">
+                        {item.category}
+                      </span>
+                    </div>
 
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() =>
-                        navigate(`/restaurant/items/edit/${item._id}`)
-                      }
-                      className="flex-1 bg-blue-500 text-white py-2 rounded-xl font-medium hover:bg-blue-600 transition-colors flex items-center justify-center space-x-1"
-                    >
-                      <Edit className="w-4 h-4" />
-                      <span>Edit</span>
-                    </button>
-                    <button
-                      onClick={() => deleteItem(item._id)}
-                      className="flex-1 bg-red-500 text-white py-2 rounded-xl font-medium hover:bg-red-600 transition-colors flex items-center justify-center space-x-1"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span>Delete</span>
-                    </button>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() =>
+                          navigate(`/restaurant/items/edit/${item._id}`)
+                        }
+                        className="flex-1 bg-blue-500 text-white py-2 rounded-xl font-medium hover:bg-blue-600 transition-colors flex items-center justify-center space-x-1"
+                      >
+                        <Edit className="w-4 h-4" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => deleteItem(item._id)}
+                        className="flex-1 bg-red-500 text-white py-2 rounded-xl font-medium hover:bg-red-600 transition-colors flex items-center justify-center space-x-1"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           )}
         </div>
