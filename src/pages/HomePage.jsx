@@ -11,6 +11,7 @@ import {
   Bell,
   BookmarkPlus,
   BaggageClaim,
+  ClipboardList,
 } from "lucide-react";
 import axiosInstance from "../config/axios";
 import { useNavigate } from "react-router-dom";
@@ -381,6 +382,19 @@ const HomePage = () => {
 
                 {/* Right Side - Actions */}
                 <div className="flex flex-col items-center space-y-4">
+                  {/* Order Button */}
+                  <button
+                    onClick={() => navigate("/orders/list")}
+                    className="flex flex-col items-center space-y-1 group"
+                  >
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center group-hover:from-blue-600 group-hover:to-purple-600 transition-all duration-300 shadow-lg shadow-blue-500/30 group-hover:scale-110">
+                      <ClipboardList className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-white text-xs font-medium">
+                      Orders
+                    </span>
+                  </button>
+
                   {/* Like Button */}
                   <button
                     onClick={() => toggleLike(item._id)}

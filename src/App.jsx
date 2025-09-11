@@ -14,9 +14,12 @@ import SavedPage from "./pages/SavedPage";
 import CartPage from "./pages/CartPage";
 import OrderPage from "./pages/ordersPage/OrderPage";
 import OrderList from "./pages/ordersPage/OrderList";
-import CustomerDashboard from "./pages/CustomerDashboard";
 import ProtectedRoute from "./protected/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
+import CustomerDashboard from "./pages/dashboard/CustomerDashboard";
+import RestaurantDashboard from "./pages/restaurant/RestaurantDashboard";
+import AddItem from "./pages/restaurant/AddItem";
+import EditItem from "./pages/restaurant/EditItem";
 
 const App = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
@@ -99,6 +102,31 @@ const App = () => {
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <CustomerDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/restaurant/dashboard"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <RestaurantDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/restaurant/items/add"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <AddItem />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/restaurant/items/edit/:itemId"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <EditItem />
               </ProtectedRoute>
             }
           />

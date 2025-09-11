@@ -18,8 +18,8 @@ import {
   Gift,
 } from "lucide-react";
 
-import axiosInstance from "../config/axios";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../config/axios";
 
 const CustomerDashboard = () => {
   const [activeTab, setActiveTab] = useState("recent");
@@ -86,8 +86,6 @@ const CustomerDashboard = () => {
     try {
       const response = await axiosInstance("/user/dashboard");
       const data = response.data;
-
-      console.log("recent orders:", data.data.recentOrders);
       setUserProfile(data.data.user);
       setRecentOrders(data.data.recentOrders);
       setPopularHotels(data.data.popularHotels);

@@ -38,8 +38,6 @@ const LoginPage = () => {
       const endpoint =
         formData.role === "customer" ? "/user/login" : "/resturants/login";
 
-      console.log("Making API call to:", endpoint);
-
       const response = await axiosInstance.post(endpoint, {
         email: formData.email,
         password: formData.password,
@@ -47,13 +45,10 @@ const LoginPage = () => {
 
       if (response.data.success) {
         localStorage.setItem("authToken", response.data.token);
-        console.log(
-          "Navigating to:",
-          formData.role === "customer" ? "/home" : "/restaurant/profile"
-        );
+        localStorage.setItem("userRole", formData.role);
 
         navigate(
-          formData.role === "customer" ? "/home" : "/restaurant/profile"
+          formData.role === "customer" ? "/home" : "/restaurant/dashboard"
         );
       } else {
         setError("Login failed - invalid credentials");
