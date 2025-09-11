@@ -21,7 +21,7 @@ const RestaurantDashboard = () => {
 
   const fetchRestaurantItems = async () => {
     try {
-      const response = await axiosInstance.get("/restaurants/profile");
+      const response = await axiosInstance.get("/resturants/profile");
       setItems(response.data.data);
     } catch (error) {
       console.error("Failed to fetch items:", error);
