@@ -24,7 +24,15 @@ import ItemVideoPage from "./pages/restaurant/ItemVideoPage";
 
 const App = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const RoleBasedRedirect = () => {
+    const userRole = localStorage.getItem("userRole");
 
+    if (userRole === "customer") {
+      return <HomePage isAuthenticated={isAuthenticated} />;
+    } else {
+      return <Navigate to="/restaurant/dashboard" replace />;
+    }
+  };
   // Show loading while checking authentication
   if (isAuthenticated === null) {
     return (
@@ -38,10 +46,7 @@ const App = () => {
     <Router>
       <div className="App">
         <Routes>
-          <Route
-            path="/"
-            element={<HomePage isAuthenticated={isAuthenticated} />}
-          />
+          <Route path="/" element={<RoleBasedRedirect />} />
 
           <Route
             path="/login"

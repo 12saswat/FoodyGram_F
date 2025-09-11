@@ -210,7 +210,6 @@ const RestaurantDashboard = () => {
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
           <Grid3X3 className="w-5 h-5 mr-2 animate-bounce" />
           Menu Items
-      
         </h3>
 
         {items.length === 0 ? (
@@ -222,7 +221,7 @@ const RestaurantDashboard = () => {
             <p className="text-gray-500 mb-4 text-lg">No items yet!</p>
             <button
               className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-xl font-medium hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-              onClick={() => navigate("/item/:id")}
+              onClick={() => navigate(`/item/${items._id}`)}
             >
               Add Your First Item
             </button>
@@ -237,7 +236,7 @@ const RestaurantDashboard = () => {
                   animation: "fadeInScale 0.5s ease-out forwards",
                   animationDelay: `${index * 100}ms`,
                 }}
-                onClick={() => console.log(`Navigate to item ${item._id}`)}
+                onClick={() => navigate(`/item/${item._id}`)}
               >
                 {item.videoUrl ? (
                   <div className="relative w-full h-full">
