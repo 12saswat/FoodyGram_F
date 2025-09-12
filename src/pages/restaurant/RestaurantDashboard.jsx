@@ -149,6 +149,7 @@ const RestaurantDashboard = () => {
     try {
       const response = await axiosInstance.get("/resturants/analytics");
       setAnalytics(response.data.data);
+      console.log("Analytics:", response.data.data);
     } catch (error) {
       console.error("Failed to fetch analytics:", error);
     }
@@ -572,6 +573,61 @@ const RestaurantDashboard = () => {
           </div>
         </div>
       )}
+
+      {/* Best Reviews Section */}
+      <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+          <MessageCircle className="w-5 h-5 mr-2 text-green-500" />
+          Customer Reviews
+        </h3>
+
+        {analytics.bestReviews.length === 0 ? (
+          <div className="text-center py-8">
+            <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-500">No reviews available yet</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {analytics.bestReviews.slice(0, 3).map((review, index) => (
+              <div
+                key={review._id}
+                className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-100"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-4 h-4 ${
+                            i < review.rating
+                              ? "text-yellow-400 fill-current"
+                              : "text-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700">
+                      {review.rating}/5
+                    </span>
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    {new Date(review.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  "{review.comment}"
+                </p>
+
+                <div className="mt-2 text-xs text-gray-500">
+                  Order ID: {review.orderId.slice(-6)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 
