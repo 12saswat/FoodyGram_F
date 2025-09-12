@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock, User, Store } from "lucide-react";
 import axiosInstance from "../../config/axios";
+import { jwtDecode } from "jwt-decode";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -46,6 +47,10 @@ const LoginPage = () => {
       if (response.data.success) {
         localStorage.setItem("authToken", response.data.token);
         localStorage.setItem("userRole", formData.role);
+
+        const decode = response.data.token;
+        const decodedToken = jwtDecode(decode);
+        localStorage.setItem("user", decodedToken._id);
 
         navigate(
           formData.role === "customer" ? "/home" : "/restaurant/dashboard"

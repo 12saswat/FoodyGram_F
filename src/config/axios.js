@@ -14,11 +14,15 @@ axiosInstance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    // 👇 Debug log: full URL + method
+    console.log(
+      `🚀 [${config.method?.toUpperCase()}] ${config.baseURL}${config.url}`,
+      config
+    );
+
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // Response interceptor

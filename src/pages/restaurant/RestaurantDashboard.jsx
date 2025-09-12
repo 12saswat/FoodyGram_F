@@ -86,11 +86,21 @@ const RestaurantDashboard = () => {
     totalOrders: 142,
     revenue: 15680,
   });
+  const [analytics, setAnalytics] = useState({
+    bestItems: [],
+    bestReviews: [],
+    cancelledOrders: [],
+    dislikedItems: [],
+    monthlyStats: {},
+    categoryPerformance: [],
+    dailyPerformance: [],
+  });
   const navigate = useNavigate();
 
   // Keep original API structure for easy replacement
   useEffect(() => {
     fetchRestaurantProfile();
+    fetchAnalytics();
     fetchStats();
   }, []);
 
@@ -133,6 +143,15 @@ const RestaurantDashboard = () => {
     localStorage.removeItem("authToken");
     navigate("/login");
     console.log("Logout clicked");
+  };
+
+  const fetchAnalytics = async () => {
+    try {
+      const response = await axiosInstance.get("/resturants/analytics");
+      setAnalytics(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch analytics:", error);
+    }
   };
 
   const StatCard = ({
@@ -301,70 +320,258 @@ const RestaurantDashboard = () => {
   );
 
   const renderAnalyticsSection = () => (
-    <div className="p-4 relative z-10">
-      <div className="grid grid-cols-1 gap-4 mb-6">
+    <div className="p-4 relative z-10 space-y-6">
+      {/* Monthly Stats Overview */}
+      <div className="grid grid-cols-2 gap-3 mb-6">
         <StatCard
           icon={TrendingUp}
-          title="Revenue"
-          value={`₹${stats.revenue || 0}`}
+          title="Total Revenue"
+          value={`₹${analytics.monthlyStats.totalRevenue || 0}`}
           color="green"
           delay={100}
         />
         <StatCard
-          icon={Users}
+          icon={Package}
           title="Total Orders"
-          value={stats.totalOrders || 0}
+          value={analytics.monthlyStats.totalOrders || 0}
           color="blue"
           delay={200}
         />
         <StatCard
-          icon={Package}
-          title="Menu Items"
-          value={items.length}
+          icon={Users}
+          title="Completed"
+          value={analytics.monthlyStats.completedOrders || 0}
           color="purple"
           delay={300}
         />
+        <StatCard
+          icon={Activity}
+          title="Avg Order"
+          value={`₹${Math.round(analytics.monthlyStats.avgOrderValue || 0)}`}
+          color="orange"
+          delay={400}
+        />
       </div>
 
-      <div
-        className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 shadow-lg"
-        style={{ animation: "slideInUp 0.6s ease-out" }}
-      >
-        <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
-          <BarChart3 className="w-5 h-5 mr-2 animate-pulse" />
-          Performance Overview
-          <TrendingUp className="w-4 h-4 ml-2 text-green-500 animate-bounce" />
+      {/* Best Performing Items */}
+      <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+          <Star className="w-5 h-5 mr-2 text-yellow-500" />
+          Top Performing Items
         </h3>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600 font-medium">
-              This Month
-            </span>
-            <span className="text-lg font-bold text-green-600">
-              ₹{stats.revenue || 0}
-            </span>
+
+        {analytics.bestItems.length === 0 ? (
+          <div className="text-center py-8">
+            <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-500">No order data available yet</p>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-            <div
-              className="bg-gradient-to-r from-purple-500 to-blue-500 h-3 rounded-full shadow-inner"
-              style={{
-                width: "75%",
-                animation: "expandWidth 1.5s ease-out",
-              }}
-            ></div>
+        ) : (
+          <div className="space-y-3">
+            {analytics.bestItems.slice(0, 5).map((item, index) => (
+              <div
+                key={item._id}
+                className="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border border-yellow-100"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-200">
+                    {item.itemImage ? (
+                      <img
+                        src={item.itemImage}
+                        alt={item.itemName}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">
+                          {item.itemName.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800 text-sm">
+                      {item.itemName}
+                    </p>
+                    <p className="text-xs text-gray-600">{item.category}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-bold text-green-600">
+                    ₹{item.totalRevenue}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {item.totalOrdered} orders
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            <div className="text-center p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl">
-              <div className="text-2xl font-bold text-green-600">95%</div>
-              <div className="text-xs text-gray-600">Customer Satisfaction</div>
+        )}
+      </div>
+
+      {/* Category Performance */}
+      <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+          <BarChart3 className="w-5 h-5 mr-2 text-blue-500" />
+          Category Performance
+        </h3>
+
+        {analytics.categoryPerformance.length === 0 ? (
+          <div className="text-center py-8">
+            <Grid3X3 className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-500">No category data available</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {analytics.categoryPerformance.map((category, index) => (
+              <div
+                key={category._id}
+                className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100"
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="font-semibold text-gray-800 capitalize">
+                    {category.category}
+                  </h4>
+                  <span className="text-sm font-bold text-blue-600">
+                    ₹{category.totalRevenue}
+                  </span>
+                </div>
+
+                <div className="flex justify-between text-xs text-gray-600 mb-2">
+                  <span>{category.totalOrdered} orders</span>
+                  <span>{category.uniqueItemsCount} items</span>
+                </div>
+
+                {/* Progress bar */}
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${Math.min(
+                        (category.totalRevenue /
+                          Math.max(
+                            ...analytics.categoryPerformance.map(
+                              (c) => c.totalRevenue
+                            )
+                          )) *
+                          100,
+                        100
+                      )}%`,
+                    }}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Daily Performance Chart */}
+      <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+          <Activity className="w-5 h-5 mr-2 text-green-500" />
+          Daily Performance
+        </h3>
+
+        {analytics.dailyPerformance.length === 0 ? (
+          <div className="text-center py-8">
+            <Activity className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-500">No daily data available</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {analytics.dailyPerformance.map((day, index) => (
+              <div
+                key={day._id}
+                className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-100"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">
+                      {day._id}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800">Day {day._id}</p>
+                    <p className="text-xs text-gray-600">{day.orders} orders</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-bold text-green-600">
+                    ₹{day.revenue}
+                  </p>
+                  <p className="text-xs text-gray-500">Revenue</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Order Status Summary */}
+      <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+          <Clock className="w-5 h-5 mr-2 text-orange-500" />
+          Order Status Overview
+        </h3>
+
+        <div className="grid grid-cols-3 gap-3">
+          <div className="text-center p-3 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl border border-yellow-100">
+            <div className="text-2xl font-bold text-yellow-600">
+              {analytics.monthlyStats.pendingOrders || 0}
             </div>
-            <div className="text-center p-3 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl">
-              <div className="text-2xl font-bold text-blue-600">4.8</div>
-              <div className="text-xs text-gray-600">Average Rating</div>
+            <div className="text-xs text-gray-600">Pending</div>
+          </div>
+          <div className="text-center p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-100">
+            <div className="text-2xl font-bold text-green-600">
+              {analytics.monthlyStats.completedOrders || 0}
             </div>
+            <div className="text-xs text-gray-600">Completed</div>
+          </div>
+          <div className="text-center p-3 bg-gradient-to-br from-red-50 to-pink-50 rounded-xl border border-red-100">
+            <div className="text-2xl font-bold text-red-600">
+              {analytics.monthlyStats.cancelledOrders || 0}
+            </div>
+            <div className="text-xs text-gray-600">Cancelled</div>
           </div>
         </div>
       </div>
+
+      {/* Cancelled Orders Analysis */}
+      {analytics.cancelledOrders.length > 0 && (
+        <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <Trash2 className="w-5 h-5 mr-2 text-red-500" />
+            Cancelled Items Analysis
+          </h3>
+
+          <div className="space-y-3">
+            {analytics.cancelledOrders.slice(0, 3).map((item, index) => (
+              <div
+                key={item._id}
+                className="p-3 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-100"
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-gray-800">
+                      {item.itemName}
+                    </p>
+                    <p className="text-xs text-gray-600">{item.category}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-red-600">
+                      -₹{item.lostRevenue}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {item.cancelledCount} cancelled
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 
