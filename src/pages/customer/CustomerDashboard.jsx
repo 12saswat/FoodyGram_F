@@ -86,6 +86,7 @@ const CustomerDashboard = () => {
     try {
       const response = await axiosInstance("/user/dashboard");
       const data = response.data;
+      console.log("Dashboard Data:", data);
       setUserProfile(data.data.user);
       setRecentOrders(data.data.recentOrders);
       setPopularHotels(data.data.popularHotels);
@@ -350,7 +351,7 @@ const CustomerDashboard = () => {
                         Order Items
                       </h4>
                       <div className="space-y-2">
-                        {order.items.map((item, itemIndex) => (
+                        {order.items.map((item) => (
                           <div
                             key={item._id}
                             className="flex justify-between items-center py-2 px-3 bg-white rounded-lg shadow-sm border border-gray-100 hover:border-orange-200 transition-all duration-200"

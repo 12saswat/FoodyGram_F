@@ -5,22 +5,24 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import HomePage from "./pages/customer/HomePage";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
-import HomePage from "./pages/HomePage";
-import RestaurantProfile from "./pages/RestaurantProfile";
 import NotificationPage from "./pages/NotificationPage";
-import SavedPage from "./pages/SavedPage";
-import CartPage from "./pages/CartPage";
+import SavedPage from "./pages/customer/SavedPage";
+import CartPage from "./pages/customer/CartPage";
 import OrderPage from "./pages/ordersPage/OrderPage";
 import OrderList from "./pages/ordersPage/OrderList";
 import ProtectedRoute from "./protected/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
-import CustomerDashboard from "./pages/dashboard/CustomerDashboard";
 import AddItem from "./pages/restaurant/AddItem";
 import EditItem from "./pages/restaurant/EditItem";
 import RestaurantDashboard from "./pages/restaurant/RestaurantDashboard";
 import ItemVideoPage from "./pages/restaurant/ItemVideoPage";
+import CustomerDashboard from "./pages/customer/CustomerDashboard";
+import RestaurantProfile from "./pages/customer/RestaurantProfile";
+import ReelPage from "./pages/restaurant/ReelPage";
+import OrdersPage from "./pages/restaurant/OrdersPage";
 
 const App = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
@@ -47,6 +49,7 @@ const App = () => {
       <div className="App">
         <Routes>
           <Route path="/" element={<RoleBasedRedirect />} />
+          <Route path="/home" element={<HomePage />} />
 
           <Route
             path="/login"
@@ -141,6 +144,22 @@ const App = () => {
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <EditItem />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/restaurant/reels"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <ReelPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="restaurant/orders"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <OrdersPage />
               </ProtectedRoute>
             }
           />

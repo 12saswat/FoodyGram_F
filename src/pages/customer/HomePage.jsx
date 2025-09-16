@@ -13,9 +13,11 @@ import {
   BaggageClaim,
   ClipboardList,
 } from "lucide-react";
-import axiosInstance from "../config/axios";
+
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+
+import axiosInstance from "../../config/axios";
+import { useAuth } from "../../context/AuthContext";
 
 const HomePage = () => {
   const [items, setItems] = useState([]);
@@ -279,25 +281,29 @@ const HomePage = () => {
                   <div className="flex items-center justify-between">
                     <button
                       onClick={() =>
-                        navigate(`/restaurants/profile/${item.resturantId._id}`)
+                        navigate(
+                          `/restaurants/profile/${item.resturantId?._id}`
+                        )
                       }
                       className="flex-1"
+                      disabled={!item.resturantId}
                     >
                       <div className="flex items-center space-x-3 rounded-2xl p-3 shadow-lg hover:bg-white/20 transition-all">
                         <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white/30">
                           <span className="text-white text-sm font-bold">
-                            {item.resturantId.name.charAt(0).toUpperCase()}
+                            {item.resturantId?.name?.charAt(0).toUpperCase() ||
+                              "R"}
                           </span>
                         </div>
                         <div className="flex-1 text-left">
                           <p className="text-white font-bold text-base drop-shadow-lg">
-                            {item.resturantId.name}
+                            {item.resturantId?.name || "Restaurant"}
                           </p>
                           <div className="flex items-center space-x-2">
                             <div className="flex items-center space-x-1">
                               <Star className="w-4 h-4 text-yellow-400 fill-current drop-shadow-sm" />
                               <span className="text-white text-sm font-medium drop-shadow-sm">
-                                {item.resturantId.rating}
+                                {item.resturantId?.rating || "N/A"}
                               </span>
                             </div>
                             <span className="text-gray-200 text-sm">•</span>
@@ -305,7 +311,10 @@ const HomePage = () => {
                               <MapPin className="w-4 h-4 text-gray-300 drop-shadow-sm" />
                               <span
                                 className="text-gray-200 text-sm truncate drop-shadow-sm block"
-                                title={item.resturantId.address}
+                                title={
+                                  item.resturantId?.address ||
+                                  "Address not available"
+                                }
                                 style={{
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
@@ -314,7 +323,8 @@ const HomePage = () => {
                                   maxWidth: "100%",
                                 }}
                               >
-                                {item.resturantId.address}
+                                {item.resturantId?.address ||
+                                  "Address not available"}
                               </span>
                             </div>
                           </div>

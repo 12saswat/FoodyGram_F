@@ -8,7 +8,7 @@ import {
   Trash2,
   CreditCard,
 } from "lucide-react";
-import axiosInstance from "../config/axios";
+import axiosInstance from "../../config/axios";
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -159,9 +159,29 @@ const CartPage = () => {
               >
                 <div className="flex items-start space-x-3">
                   {/* Item Image - Smaller size */}
-                  <div className="w-14 h-14 bg-gradient-to-r from-orange-400 to-red-400 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-lg">🍽️</span>
-                  </div>
+
+                  {/* Item Image/Video */}
+                  {item.imageUrl || item.videoUrl ? (
+                    <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+                      {item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <video
+                          src={item.videoUrl}
+                          className="w-full h-full object-cover"
+                          muted
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <div className="w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <span className="text-white text-2xl">🍽️</span>
+                    </div>
+                  )}
 
                   {/* Item Info - Takes most space */}
                   <div className="flex-1 min-w-0">

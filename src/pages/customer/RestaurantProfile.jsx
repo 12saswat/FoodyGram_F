@@ -14,7 +14,7 @@ import {
   Award,
   Users,
 } from "lucide-react";
-import axiosInstance from "../config/axios";
+import axiosInstance from "../../config/axios";
 
 const RestaurantProfile = () => {
   const navigate = useNavigate();

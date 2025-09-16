@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import axiosInstance from "../../config/axios";
 import { useNavigate } from "react-router-dom";
+import FooterResturant from "./FooterResturant";
 
 // Animated Background Component
 const AnimatedBackground = () => (
@@ -81,6 +82,7 @@ const RestaurantDashboard = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState("items");
+  const [orderLenght, setOrderLength] = useState();
   const [stats, setStats] = useState({
     totalItems: 6,
     totalOrders: 142,
@@ -97,11 +99,13 @@ const RestaurantDashboard = () => {
   });
   const navigate = useNavigate();
 
+  // Add this useEffect to debug the state update
+  useEffect(() => {}, [orderLenght]);
+
   // Keep original API structure for easy replacement
   useEffect(() => {
     fetchRestaurantProfile();
     fetchAnalytics();
-    fetchStats();
   }, []);
 
   const fetchRestaurantProfile = async () => {
@@ -109,6 +113,8 @@ const RestaurantDashboard = () => {
       const response = await axiosInstance.get("/resturants/profile");
       const data = response.data.data;
       setProfileData(data);
+      setOrderLength(data?.orders?.length); // This will update the state
+
       const itemsData = data?.items || [];
       setItems(Array.isArray(itemsData) ? itemsData : []);
     } catch (error) {
@@ -119,19 +125,10 @@ const RestaurantDashboard = () => {
     }
   };
 
-  const fetchStats = async () => {
-    try {
-      // const response = await axiosInstance.get("/restaurant/stats");
-      // setStats(response.data.data);
-    } catch (error) {
-      console.error("Failed to fetch stats:", error);
-    }
-  };
-
   const deleteItem = async (itemId) => {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
-        await axiosInstance.delete(`/restaurant/items/${itemId}`);
+        await axiosInstance.delete(`/items/delete/${itemId}`);
         setItems(items.filter((item) => item._id !== itemId));
       } catch (error) {
         console.error("Failed to delete item:", error);
@@ -751,6 +748,10 @@ const RestaurantDashboard = () => {
         {activeSection === "items" && renderItemsSection()}
         {activeSection === "analytics" && renderAnalyticsSection()}
       </div>
+
+      <FooterResturant order={orderLenght} />
+      {/* Mobile bottom padding */}
+      <div className="h-24 md:h-20"></div>
     </div>
   );
 };

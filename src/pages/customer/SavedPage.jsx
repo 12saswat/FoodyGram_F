@@ -9,7 +9,7 @@ import {
   Trash2,
   Search,
 } from "lucide-react";
-import axiosInstance from "../config/axios";
+import axiosInstance from "../../config/axios";
 
 const SavedPage = () => {
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ const SavedPage = () => {
   const fetchSavedItems = async () => {
     try {
       const response = await axiosInstance.get("/user/savedItems");
+      console.log("Saved Items:", response.data.response);
       setSavedItems(response.data.response || []);
     } catch (err) {
       console.error("Failed to fetch saved items:", err);
@@ -133,9 +134,27 @@ const SavedPage = () => {
               >
                 <div className="flex items-center space-x-4">
                   {/* Item Image/Video */}
-                  <div className="w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-2xl">🍽️</span>
-                  </div>
+                  {item.imageUrl || item.videoUrl ? (
+                    <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+                      {item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <video
+                          src={item.videoUrl}
+                          className="w-full h-full object-cover"
+                          muted
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <div className="w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <span className="text-white text-2xl">🍽️</span>
+                    </div>
+                  )}
 
                   {/* Item Info */}
                   <div className="flex-1">
