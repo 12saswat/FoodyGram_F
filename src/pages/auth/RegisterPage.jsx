@@ -93,11 +93,11 @@ const RegisterPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="w-full max-w-md my-8">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center p-2 overflow-y-auto">
+      <div className="w-full max-w-md my-4">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+        <div className="text-center mb-4">
+          <div className="w-14 h-14 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl mx-auto mb-2 flex items-center justify-center">
             <span className="text-white text-2xl font-bold">FR</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -107,7 +107,7 @@ const RegisterPage = () => {
         </div>
 
         {/* Register Form */}
-        <div className="bg-white rounded-3xl shadow-xl p-8">
+        <div className="bg-white rounded-3xl shadow-xl p-6">
           {/* Role Selection */}
           <div className="flex bg-gray-100 rounded-2xl p-1 mb-6">
             <button
@@ -136,7 +136,7 @@ const RegisterPage = () => {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-2">
             {role === "customer" ? (
               <>
                 {/* Customer Name */}
@@ -371,7 +371,7 @@ const RegisterPage = () => {
           </form>
 
           {/* Sign In Link */}
-          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+          <div className="mt-5 pt-2 border-t border-gray-100 text-center">
             <p className="text-gray-600">
               Already have an account?{" "}
               <Link

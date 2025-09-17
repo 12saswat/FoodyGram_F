@@ -28,7 +28,6 @@ const ReelPage = () => {
       const response = await axiosInstance.get("/resturants/orders");
       setOrderLength(response?.data?.data.length);
     } catch (err) {
-      console.error("Failed to fetch orders", err);
     } finally {
       setLoading(false);
     }

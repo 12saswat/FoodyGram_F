@@ -23,17 +23,15 @@ import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import RestaurantProfile from "./pages/customer/RestaurantProfile";
 import ReelPage from "./pages/restaurant/ReelPage";
 import OrdersPage from "./pages/restaurant/OrdersPage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 
 const App = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const RoleBasedRedirect = () => {
-    const userRole = localStorage.getItem("userRole");
-
-    if (userRole === "customer") {
-      return <HomePage isAuthenticated={isAuthenticated} />;
-    } else {
-      return <Navigate to="/restaurant/dashboard" replace />;
+    if (!isAuthenticated) {
+      return <Navigate to="/home" replace />;
     }
+    const userRole = localStorage.getItem("userRole");
   };
   // Show loading while checking authentication
   if (isAuthenticated === null) {
@@ -66,6 +64,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route
             path="/notifications"
             element={

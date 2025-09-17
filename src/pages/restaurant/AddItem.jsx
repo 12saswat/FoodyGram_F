@@ -138,7 +138,7 @@ const AddItem = () => {
       if (imageFile) {
         formDataToSend.append("imageUrl", imageFile);
       }
-      console.log("form data for add", formDataToSend);
+
       for (let pair of formDataToSend.entries()) {
         console.log(pair[0] + ": " + pair[1]);
       }

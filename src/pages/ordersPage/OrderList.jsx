@@ -42,14 +42,12 @@ const OrderList = () => {
         setSelectedOrder(updatedOrder);
       }
     }
-    console.log("Updated selectedOrder:", orders);
   }, [orders]);
 
   const fetchOrders = async () => {
     try {
       const response = await axiosInstance.get("/orders");
 
-      console.log("Orders:", response.data.orders);
       setOrders(response.data.orders);
     } catch (error) {
       console.error("Error fetching orders:", error);

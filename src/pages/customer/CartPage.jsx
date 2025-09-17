@@ -46,7 +46,6 @@ const CartPage = () => {
       });
 
       const orderId = response?.data.orderId || response.data._id;
-      console.log("Order ID:", orderId);
 
       if (orderId) {
         navigate(`/orders/list`);

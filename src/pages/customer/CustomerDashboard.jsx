@@ -86,7 +86,7 @@ const CustomerDashboard = () => {
     try {
       const response = await axiosInstance("/user/dashboard");
       const data = response.data;
-      console.log("Dashboard Data:", data);
+
       setUserProfile(data.data.user);
       setRecentOrders(data.data.recentOrders);
       setPopularHotels(data.data.popularHotels);

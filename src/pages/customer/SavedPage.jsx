@@ -24,7 +24,7 @@ const SavedPage = () => {
   const fetchSavedItems = async () => {
     try {
       const response = await axiosInstance.get("/user/savedItems");
-      console.log("Saved Items:", response.data.response);
+
       setSavedItems(response.data.response || []);
     } catch (err) {
       console.error("Failed to fetch saved items:", err);
@@ -45,7 +45,6 @@ const SavedPage = () => {
 
   const addToCart = async (item) => {
     try {
-      console.log(savedItems);
       await axiosInstance.post(`/user/checkout/saved/${item._id}`, {
         itemId: item._id,
         name: item.name,

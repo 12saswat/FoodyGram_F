@@ -34,7 +34,6 @@ const HomePage = () => {
 
   useEffect(() => {
     fetchItems();
-    fetchSavedItems();
   }, []);
 
   useEffect(() => {
@@ -70,16 +69,6 @@ const HomePage = () => {
       setError("Failed to load items");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchSavedItems = async () => {
-    try {
-      const response = await axiosInstance.get("user/savedItems");
-      const savedItemIds = response.data.data?.map((item) => item._id) || [];
-      setSavedItems(new Set(savedItemIds));
-    } catch (err) {
-      console.error("Failed to fetch saved items:", err);
     }
   };
 
@@ -152,10 +141,6 @@ const HomePage = () => {
     } catch (err) {
       console.error("Failed to add to cart:", err);
     }
-  };
-
-  const getSavedItemsData = () => {
-    return items.filter((item) => savedItems.has(item._id));
   };
 
   useEffect(() => {
@@ -394,7 +379,13 @@ const HomePage = () => {
                 <div className="flex flex-col items-center space-y-4">
                   {/* Order Button */}
                   <button
-                    onClick={() => navigate("/orders/list")}
+                    onClick={() => {
+                      if (!isAuthenticated) {
+                        navigate("/login");
+                      } else {
+                        navigate("/orders/list");
+                      }
+                    }}
                     className="flex flex-col items-center space-y-1 group"
                   >
                     <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center group-hover:from-blue-600 group-hover:to-purple-600 transition-all duration-300 shadow-lg shadow-blue-500/30 group-hover:scale-110">
@@ -488,7 +479,13 @@ const HomePage = () => {
           </button>
 
           <button
-            onClick={() => navigate("/saved")}
+            onClick={() => {
+              if (!isAuthenticated) {
+                navigate("/login");
+              } else {
+                navigate("/saved");
+              }
+            }}
             className="flex flex-col items-center space-y-1 group relative"
           >
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 group-hover:bg-white/20 transition-all">
@@ -504,7 +501,13 @@ const HomePage = () => {
           </button>
 
           <button
-            onClick={() => navigate("/customer/dashboard")}
+            onClick={() => {
+              if (!isAuthenticated) {
+                navigate("/login");
+              } else {
+                navigate("/customer/dashboard");
+              }
+            }}
             className="flex flex-col items-center space-y-1 group"
           >
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 group-hover:bg-white/20 transition-all">
@@ -513,7 +516,13 @@ const HomePage = () => {
           </button>
 
           <button
-            onClick={() => navigate("/cart")}
+            onClick={() => {
+              if (!isAuthenticated) {
+                navigate("/login");
+              } else {
+                navigate("/cart");
+              }
+            }}
             className="flex flex-col items-center space-y-1 group relative"
           >
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 group-hover:bg-white/20 transition-all">

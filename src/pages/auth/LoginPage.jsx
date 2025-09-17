@@ -27,11 +27,9 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    console.log("Form submitted - preventing default");
     e.preventDefault();
     e.stopPropagation();
 
-    console.log("Setting loading to true");
     setLoading(true);
     setError("");
 
@@ -45,38 +43,38 @@ const LoginPage = () => {
       });
 
       if (response.data.success) {
-        localStorage.setItem("authToken", response.data.token);
-        localStorage.setItem("userRole", formData.role);
+        if (response.data.success) {
+          localStorage.setItem("authToken", response.data.token);
 
-        const decode = response.data.token;
-        const decodedToken = jwtDecode(decode);
-        localStorage.setItem("user", decodedToken._id);
+          // Decode the token to get the actual role
+          const decodedToken = jwtDecode(response.data.token);
+          localStorage.setItem("userRole", decodedToken.role); // <-- Use role from token
+          localStorage.setItem("user", decodedToken._id);
 
-        navigate(
-          formData.role === "customer" ? "/home" : "/restaurant/dashboard"
-        );
+          navigate(
+            decodedToken.role === "customer" ? "/home" : "/restaurant/dashboard"
+          );
+        }
       } else {
         setError("Login failed - invalid credentials");
       }
     } catch (err) {
-      console.error("Catch block - Login error:", err);
       setError(
         err.response?.data?.response?.message ||
           err.response?.data?.message ||
           "Login failed"
       );
     } finally {
-      console.log("Setting loading to false");
       setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="w-full max-w-md my-8">
+      <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+        <div className="text-center mb-3">
+          <div className="w-14 h-14 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl mx-auto mb-2 flex items-center justify-center">
             <span className="text-white text-2xl font-bold">FR</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -86,9 +84,9 @@ const LoginPage = () => {
         </div>
 
         {/* Login Form */}
-        <div className="bg-white rounded-3xl shadow-xl p-8">
+        <div className="bg-white rounded-3xl shadow-xl p-6">
           {/* Role Selection */}
-          <div className="flex bg-gray-100 rounded-2xl p-1 mb-6">
+          <div className="flex bg-gray-100 rounded-2xl p-1 mb-4">
             <button
               type="button"
               onClick={() =>

@@ -139,14 +139,12 @@ const RestaurantDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     navigate("/login");
-    console.log("Logout clicked");
   };
 
   const fetchAnalytics = async () => {
     try {
       const response = await axiosInstance.get("/resturants/analytics");
       setAnalytics(response.data.data);
-      console.log("Analytics:", response.data.data);
     } catch (error) {
       console.error("Failed to fetch analytics:", error);
     }
@@ -268,7 +266,6 @@ const RestaurantDashboard = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        console.log(`Edit item ${item._id}`);
                       }}
                       className="absolute top-2 left-2 bg-black bg-opacity-50 p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-black hover:bg-opacity-70"
                     >
@@ -284,7 +281,6 @@ const RestaurantDashboard = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        console.log(`Edit item ${item._id}`);
                       }}
                       className="absolute top-2 left-2 bg-white bg-opacity-20 backdrop-blur-sm p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:bg-opacity-30"
                     >
