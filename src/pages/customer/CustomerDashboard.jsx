@@ -111,6 +111,7 @@ const CustomerDashboard = () => {
   const handelLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
+    localStorage.removeItem("userRole");
     window.location.href = "/login";
   };
 

@@ -138,6 +138,8 @@ const RestaurantDashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("userRole");
     navigate("/login");
   };
 
