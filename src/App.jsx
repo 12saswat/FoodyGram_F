@@ -26,12 +26,15 @@ import OrdersPage from "./pages/restaurant/OrdersPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 
 const App = () => {
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, setIsAuthenticated, userRole } = useAuth();
   const RoleBasedRedirect = () => {
     if (!isAuthenticated) {
       return <Navigate to="/home" replace />;
     }
-    const userRole = localStorage.getItem("userRole");
+    if (userRole === "restaurant") {
+      return <Navigate to="/restaurant/dashboard" replace />;
+    }
+    return <Navigate to="/home" replace />;
   };
   // Show loading while checking authentication
   if (isAuthenticated === null) {
